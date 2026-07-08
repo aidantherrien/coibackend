@@ -1,0 +1,19 @@
+
+Requirements · TXT
+# COI Backend — Python dependencies
+# Install with:  pip install -r requirements.txt
+#
+# Everything else the scripts use (os, re, json, time) is in the standard
+# library and needs no install.
+ 
+# HTTP client — used for all PDF.co API calls (upload, parse, job/check, fetch)
+requests>=2.31
+ 
+# PostgreSQL driver (psycopg 3). The [binary] extra bundles libpq inside the
+# wheel, so you don't need PostgreSQL client tools on PATH. This is the fix for
+# the "no pq wrapper available" import error.
+psycopg[binary]>=3.1
+ 
+# Loads DATABASE_URL and PDFCO_API_KEY from the .env file (keeps secrets out of code)
+python-dotenv>=1.0
+ 
