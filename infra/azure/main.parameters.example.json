@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": { "value": "canadacentral" },
+    "workloadName": { "value": "coi-portal" },
+    "environmentName": { "value": "dev" },
+    "storagePublicNetworkAccess": { "value": "Enabled" },
+    "keyVaultPublicNetworkAccess": { "value": "Enabled" },
+    "blobSoftDeleteRetentionDays": { "value": 30 },
+    "logRetentionDays": { "value": 30 },
+    "enableDeleteLocks": { "value": true },
+    "additionalTags": {
+      "value": {
+        "costCenter": "replace-before-deployment"
+      }
+    }
+  }
+}

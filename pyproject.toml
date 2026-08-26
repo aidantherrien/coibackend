@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coi-backend"
+version = "0.2.0"
+description = "Auditable vendor invoice and order-acknowledgement ingestion"
+readme = "README.md"
+requires-python = ">=3.12,<3.15"
+dependencies = [
+  "azure-identity==1.25.3",
+  "azure-keyvault-secrets==4.11.2",
+  "azure-storage-blob==12.30.0",
+  "psycopg[binary]==3.3.4",
+  "python-dotenv==1.2.3",
+  "requests==2.34.2",
+]
+
+[project.scripts]
+coi-backend = "coi_backend.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["coi_backend*"]
+
+[tool.setuptools.data-files]
+"share/coi-backend/sql/migrations" = ["sql/migrations/*.sql"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers"
+testpaths = ["tests"]
+markers = ["integration: requires an empty PostgreSQL test database"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = ["data", "codex_context"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*.py" = ["E402"]
+"sql/test_connection.py" = ["E402"]

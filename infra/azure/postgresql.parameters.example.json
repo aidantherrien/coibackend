@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": { "value": "canadacentral" },
+    "serverName": { "value": "psql-coi-portal-prod-01-unique" },
+    "environmentName": { "value": "prod" },
+    "virtualNetworkResourceId": { "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-coi-prod-01" },
+    "delegatedSubnetResourceId": { "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-coi-prod-01/subnets/snet-postgresql-prod-01" },
+    "privateDnsZoneName": { "value": "coi-prod.postgres.database.azure.com" },
+    "administratorLogin": { "value": "coi_platform_admin" },
+    "databaseName": { "value": "coi" },
+    "skuTier": { "value": "Burstable" },
+    "skuName": { "value": "Standard_B1ms" },
+    "storageSizeGB": { "value": 32 },
+    "backupRetentionDays": { "value": 7 },
+    "highAvailabilityMode": { "value": "Disabled" },
+    "geoRedundantBackup": { "value": "Disabled" },
+    "enableDeleteLock": { "value": true }
+  }
+}

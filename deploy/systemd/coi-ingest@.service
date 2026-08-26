@@ -1,0 +1,59 @@
+[Unit]
+Description=COI %i document ingestion
+Documentation=file:/opt/coi/current/docs/azure-deployment.md
+Wants=network-online.target
+After=network-online.target
+AssertPathExists=/etc/coi/coi.env
+AssertPathExists=/opt/coi/current/coi_backend/cli.py
+AssertFileIsExecutable=/opt/coi/current/.venv/bin/python
+
+[Service]
+Type=oneshot
+User=coi
+Group=coi
+WorkingDirectory=/opt/coi/current
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+EnvironmentFile=/etc/coi/coi.env
+Environment=INVOICE_ARCHIVE_DIR=/var/lib/coi/archive/invoices
+Environment=OA_ARCHIVE_DIR=/var/lib/coi/archive/oa
+Environment=INVOICE_QUARANTINE_DIR=/var/lib/coi/quarantine/invoices
+Environment=OA_QUARANTINE_DIR=/var/lib/coi/quarantine/oa
+# ExecStart pins the managed-identity Azure Blob backend after systemd expands
+# EnvironmentFile values. The unit must never fall back to VM-local evidence.
+ExecStart=/usr/bin/env ARTIFACT_STORE=azure_blob /opt/coi/current/.venv/bin/python -m coi_backend.cli ingest --type %i
+# A first import can contain an unbounded backlog. Individual network requests
+# are bounded by the application, so systemd must not terminate the whole batch.
+TimeoutStartSec=infinity
+UMask=0077
+StandardOutput=append:/var/log/coi/ingestion.log
+StandardError=append:/var/log/coi/ingestion.log
+
+# The worker needs network access and write access only to its local inbox,
+# artifacts, and log directories. Application code and system paths stay read-only.
+NoNewPrivileges=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+PrivateDevices=true
+PrivateIPC=true
+PrivateTmp=true
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectProc=invisible
+ProtectSystem=strict
+ProcSubset=pid
+ReadWritePaths=/var/lib/coi /var/log/coi
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

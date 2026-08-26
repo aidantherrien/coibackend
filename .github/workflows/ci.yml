@@ -1,0 +1,101 @@
+name: Azure and Python quality
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-test:
+    name: Lint and test (Python 3.12)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TEST_DATABASE_URL: postgresql://coi_test@127.0.0.1:5432/coi_test
+
+    services:
+      postgres:
+        image: postgres:16.14-alpine3.22
+        env:
+          POSTGRES_DB: coi_test
+          POSTGRES_USER: coi_test
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U coi_test -d coi_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements.lock
+            requirements-dev.txt
+
+      - name: Install dependencies
+        run: >-
+          python -m pip install
+          --disable-pip-version-check
+          -r requirements-dev.txt
+
+      - name: Verify dependency consistency
+        run: python -m pip check
+
+      - name: Lint
+        run: |
+          ruff format --check .
+          ruff check .
+
+      - name: Test
+        run: python -m pytest -q tests
+
+      - name: Build application wheel
+        run: >-
+          python -m pip wheel
+          --disable-pip-version-check
+          --no-deps
+          --wheel-dir "$RUNNER_TEMP/wheels"
+          .
+
+      - name: Install Bicep
+        shell: bash
+        env:
+          BICEP_VERSION: "0.46.1"
+          BICEP_SHA256: "3e011d629ea4311b7a7dd8f0040ab2b1a072ea4ff5d02cb75e0e55a9a6703fb9"
+        run: |
+          set -euo pipefail
+          bicep_path="$RUNNER_TEMP/bicep"
+          url="https://github.com/Azure/bicep/releases/download/v${BICEP_VERSION}/bicep-linux-x64"
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
+            "$url" --output "$bicep_path"
+          echo "$BICEP_SHA256  $bicep_path" | sha256sum --check --strict
+          chmod 0755 "$bicep_path"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+      - name: Validate Azure Bicep
+        shell: bash
+        run: |
+          set -euo pipefail
+          for template in infra/azure/*.bicep; do
+            bicep lint "$template"
+            bicep build "$template" --stdout >/dev/null
+          done

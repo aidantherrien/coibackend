@@ -1,0 +1,11 @@
+/var/log/coi/*.log {
+    daily
+    maxsize 50M
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 coi coi
+    su coi coi
+}

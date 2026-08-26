@@ -1,0 +1,11 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": { "value": "canadacentral" },
+    "existingVmName": { "value": "vm-coi-portal-dev-01" },
+    "logAnalyticsWorkspaceName": { "value": "log-coi-portal-dev-01" },
+    "dataCollectionRuleName": { "value": "dcr-coi-portal-dev-ingestion-01" },
+    "logRetentionDays": { "value": 30 }
+  }
+}
