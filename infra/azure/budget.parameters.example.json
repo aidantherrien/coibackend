@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "budgetName": { "value": "budget-coi-portal-dev-monthly" },
+    "resourceGroupName": { "value": "rg-coi-portal-dev" },
+    "monthlyBudgetAmount": { "value": 50 },
+    "budgetContactEmails": {
+      "value": [
+        "operator@example.invalid",
+        "owner@example.invalid"
+      ]
+    }
+  }
+}

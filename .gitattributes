@@ -1,0 +1,28 @@
+* text=auto
+
+.editorconfig text eol=lf
+.env.example text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.gitleaksignore text eol=lf
+
+# Keep code, configuration, and deployment files Linux-friendly.
+*.py text eol=lf
+*.sql text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+Dockerfile text eol=lf
+
+# Never apply text conversion to binary artifacts.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.zip binary
+*.gz binary

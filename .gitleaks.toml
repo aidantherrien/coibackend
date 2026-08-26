@@ -1,0 +1,14 @@
+title = "COI Backend secret scanning"
+
+[extend]
+useDefault = true
+
+# The default rules do not detect low-entropy passwords embedded in PostgreSQL
+# connection URIs. Keep the default detector set and add this project-specific
+# rule so even short inline database passwords are rejected.
+[[rules]]
+id = "postgresql-connection-uri"
+description = "PostgreSQL connection URI containing inline credentials"
+regex = '''(?i)\bpostgres(?:ql)?://[^:\s/@]+:([^@\s/]+)@[^\s"'`]+'''
+secretGroup = 1
+keywords = ["postgres://", "postgresql://"]

@@ -1,0 +1,12 @@
+[Unit]
+Description=Run COI %i ingestion every 15 minutes
+
+[Timer]
+OnCalendar=*-*-* *:00/15:00
+Persistent=true
+RandomizedDelaySec=60
+AccuracySec=1min
+Unit=coi-ingest@%i.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,7 @@
+# Exact fingerprints for the already-published b0edd29 commit. The credential
+# must still be rotated; these entries only keep immutable history from blocking
+# CI after the live files are cleaned. New occurrences remain detectable.
+b0edd29d38012fd31f7da3885e460abea6b3ef1e:sql/test_connection.py:postgresql-connection-uri:4
+b0edd29d38012fd31f7da3885e460abea6b3ef1e:sql/test.py:postgresql-connection-uri:3
+b0edd29d38012fd31f7da3885e460abea6b3ef1e:scripts/ingest_invoices.py:postgresql-connection-uri:14
+b0edd29d38012fd31f7da3885e460abea6b3ef1e:scripts/ingest_oa.py:postgresql-connection-uri:14
